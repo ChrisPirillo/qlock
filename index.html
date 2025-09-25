@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Technical SEO & Metadata -->
+    <meta charset="UTF-8">
+    <title>Qlock - The Word Clock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Qlock is a visually stunning, minimalist web application that tells time using words instead of numbers, displayed in a clean, elegant grid.">
+    <meta name="keywords" content="word clock, qlock, qlocktwo, text clock, time in words, javascript clock, creative clock, design clock">
+    <meta name="author" content="Chris Pirillo">
+    <link rel="canonical" href="https://pirillo.com/arcade/qlock.html">
+
+    <!-- Open Graph (for social sharing) -->
+    <meta property="og:title" content="Qlock - The Word Clock">
+    <meta property="og:description" content="A minimalist web application that tells time using a beautiful grid of words.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pirillo.com/arcade/qlock.html">
+    <meta property="og:image" content="https://pirillo.com/arcade/images/qlock.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Pirillo's Arcade">
+
+    <!-- Twitter Card (for Twitter sharing) -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@ChrisPirillo">
+    <meta name="twitter:creator" content="@ChrisPirillo">
+    <meta name="twitter:title" content="Qlock - The Word Clock">
+    <meta name="twitter:description" content="A minimalist web application that tells time using a beautiful grid of words.">
+    <meta name="twitter:image" content="https://pirillo.com/arcade/images/qlock.png">
+
+    <!-- Performance & Resource Hints -->
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+    
+    <!-- Preload critical CSS for fonts to prevent render-blocking -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <!-- Fallback for browsers that don't support preload -->
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&display=swap"></noscript>
+
+    <!-- Tailwind CSS (Render-blocking as per instruction) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1CQ4D3VQ3L"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-1CQ4D3VQ3L');
+    </script>
+
+    <!-- Inlined CSS for Critical Path Rendering -->
+    <style>
+        :root {
+            --bg-color: #000000;
+            --inactive-color: rgba(255, 255, 255, 0.15);
+            --active-color: rgba(255, 255, 255, 1);
+        }
+
+        body {
+            /* font-display: swap is handled by the Google Fonts link */
+            font-family: 'Roboto Mono', monospace;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-color: var(--bg-color);
+            transition: background-color 0.5s ease;
+            /* Prevent text selection for a more app-like feel */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Base state for letters (dimmed) */
+        .letter {
+            transition: color 0.5s ease-in-out, text-shadow 0.5s ease-in-out;
+            color: var(--inactive-color);
+        }
+
+        /* Active state for letters (illuminated) */
+        .letter.active {
+            color: var(--active-color);
+            text-shadow: 0 0 5px var(--active-color), 0 0 10px var(--active-color);
+        }
+    </style>
+
+    <!-- JSON-LD Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Qlock - The Word Clock",
+      "description": "A minimalist web application that tells time using a beautiful grid of words.",
+      "url": "https://pirillo.com/arcade/qlock.html",
+      "mainEntity": {
+        "@type": "SoftwareApplication",
+        "name": "Qlock",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0"
+        }
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Chris Pirillo",
+        "url": "https://chris.pirillo.com/"
+      },
+      "image": "https://pirillo.com/arcade/images/qlock.png"
+    }
+    </script>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+
+    <!-- Main clock container using semantic <main> tag -->
+    <main class="relative w-[90vmin] h-[90vmin] max-w-[600px] max-h-[600px] p-4 sm:p-6" role="timer" aria-live="polite" aria-label="Word Clock">
+        <!-- Letter Grid -->
+        <div id="clock-grid" class="grid grid-cols-11 grid-rows-10 gap-x-2 gap-y-1 sm:gap-x-4 sm:gap-y-2 h-full w-full">
+            <!-- Letters will be dynamically inserted here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- JAVASCRIPT IS UNCHANGED PER INSTRUCTIONS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Set Random Color Theme on Load ---
+            const randomHue = Math.floor(Math.random() * 360);
+            const bgColor = `hsl(${randomHue}, 30%, 10%)`;
+            const activeColor = `hsl(${randomHue}, 80%, 95%)`;
+            const inactiveColor = `hsla(${randomHue}, 40%, 40%, 0.4)`;
+            
+            document.documentElement.style.setProperty('--bg-color', bgColor);
+            document.documentElement.style.setProperty('--active-color', activeColor);
+            document.documentElement.style.setProperty('--inactive-color', inactiveColor);
+
+
+            const grid = document.getElementById('clock-grid');
+
+            // The 11x10 letter matrix for the clock face
+            const letterMatrix = [
+                ['I', 'T', 'L', 'I', 'S', 'A', 'S', 'A', 'M', 'P', 'M'],
+                ['A', 'C', 'Q', 'U', 'A', 'R', 'T', 'E', 'R', 'D', 'C'],
+                ['T', 'W', 'E', 'N', 'T', 'Y', 'F', 'I', 'V', 'E', 'X'],
+                ['H', 'A', 'L', 'F', 'S', 'T', 'E', 'N', 'F', 'T', 'O'],
+                ['P', 'A', 'S', 'T', 'E', 'R', 'U', 'N', 'I', 'N', 'E'],
+                ['O', 'N', 'E', 'S', 'I', 'X', 'T', 'H', 'R', 'E', 'E'],
+                ['F', 'O', 'U', 'R', 'F', 'I', 'V', 'E', 'T', 'W', 'O'],
+                ['E', 'I', 'G', 'H', 'T', 'E', 'L', 'E', 'V', 'E', 'N'],
+                ['S', 'E', 'V', 'E', 'N', 'T', 'W', 'E', 'L', 'V', 'E'],
+                ['T', 'E', 'N', 'S', 'E', 'O', 'C', 'L', 'O', 'C', 'K']
+            ];
+
+            // Map of words to their letter coordinates [row, colStart, colEnd]
+            const wordMap = {
+                'IT': [0, 0, 1], 'IS': [0, 3, 4],
+                'A': [1, 0, 0], 'QUARTER': [1, 2, 8],
+                'TWENTY': [2, 0, 5], 'FIVE_MIN': [2, 6, 9],
+                'HALF': [3, 0, 3], 'TEN_MIN': [3, 5, 7],
+                'PAST': [4, 0, 3], 'TO': [3, 9, 10],
+                'NINE': [4, 7, 10], 'ONE': [5, 0, 2], 'SIX': [5, 3, 5], 'THREE': [5, 6, 10],
+                'FOUR': [6, 0, 3], 'FIVE_HR': [6, 4, 7], 'TWO': [6, 8, 10],
+                'EIGHT': [7, 0, 4], 'ELEVEN': [7, 5, 10],
+                'SEVEN': [8, 0, 4], 'TWELVE': [8, 5, 10],
+                'TEN_HR': [9, 0, 2], 'OCLOCK': [9, 5, 10]
+            };
+            
+            // Generate the grid of letters
+            letterMatrix.flat().forEach((char, i) => {
+                const letterSpan = document.createElement('span');
+                letterSpan.className = 'letter flex items-center justify-center text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-medium uppercase';
+                letterSpan.textContent = char;
+                letterSpan.dataset.index = i;
+                grid.appendChild(letterSpan);
+            });
+
+            const allLetters = document.querySelectorAll('.letter');
+
+            function updateClock() {
+                const now = new Date();
+                let hours = now.getHours();
+                const minutes = now.getMinutes();
+                
+                // --- Reset all elements ---
+                allLetters.forEach(l => l.classList.remove('active'));
+
+                // --- Activate letters based on time ---
+                let activeWords = ['IT', 'IS'];
+                
+                let displayHour = hours % 12;
+                if (displayHour === 0) displayHour = 12;
+
+                const roundedMinutes = Math.floor(minutes / 5);
+
+                switch (roundedMinutes) {
+                    case 1: activeWords.push('FIVE_MIN', 'PAST'); break;
+                    case 2: activeWords.push('TEN_MIN', 'PAST'); break;
+                    case 3: activeWords.push('A', 'QUARTER', 'PAST'); break;
+                    case 4: activeWords.push('TWENTY', 'PAST'); break;
+                    case 5: activeWords.push('TWENTY', 'FIVE_MIN', 'PAST'); break;
+                    case 6: activeWords.push('HALF', 'PAST'); break;
+                    case 7: activeWords.push('TWENTY', 'FIVE_MIN', 'TO'); displayHour++; break;
+                    case 8: activeWords.push('TWENTY', 'TO'); displayHour++; break;
+                    case 9: activeWords.push('A', 'QUARTER', 'TO'); displayHour++; break;
+                    case 10: activeWords.push('TEN_MIN', 'TO'); displayHour++; break;
+                    case 11: activeWords.push('FIVE_MIN', 'TO'); displayHour++; break;
+                    case 0: 
+                        if (minutes < 5) {
+                           activeWords.push('OCLOCK');
+                        } else { // It's almost the next hour
+                           activeWords.push('OCLOCK');
+                           displayHour++;
+                        }
+                        break;
+                }
+                
+                // Correct hour rollover
+                if (displayHour > 12) displayHour = 1;
+
+
+                switch (displayHour) {
+                    case 1: activeWords.push('ONE'); break;
+                    case 2: activeWords.push('TWO'); break;
+                    case 3: activeWords.push('THREE'); break;
+                    case 4: activeWords.push('FOUR'); break;
+                    case 5: activeWords.push('FIVE_HR'); break;
+                    case 6: activeWords.push('SIX'); break;
+                    case 7: activeWords.push('SEVEN'); break;
+                    case 8: activeWords.push('EIGHT'); break;
+                    case 9: activeWords.push('NINE'); break;
+                    case 10: activeWords.push('TEN_HR'); break;
+                    case 11: activeWords.push('ELEVEN'); break;
+                    case 12: activeWords.push('TWELVE'); break;
+                }
+                
+                // --- Apply active class to the words ---
+                activeWords.forEach(wordKey => {
+                    const [row, start, end] = wordMap[wordKey];
+                    for (let i = start; i <= end; i++) {
+                        const index = row * 11 + i;
+                        allLetters[index].classList.add('active');
+                    }
+                });
+
+                // --- Minute dot logic removed ---
+            }
+            
+            // Initial call and set interval to update every second
+            updateClock();
+            setInterval(updateClock, 1000);
+        });
+    </script>
+</body>
+</html>
